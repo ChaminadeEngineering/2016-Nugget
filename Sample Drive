@@ -1,0 +1,115 @@
+#include "WPILib.h"
+
+/**
+ * This sample shows how to use the new CANTalon to just run a motor in a basic
+ *   throttle mode, in the same manner as you might control a traditional PWM
+ *   controlled motor.
+ *
+ */
+class Robot : public SampleRobot {
+	  CANTalon LeftTopDrive, LeftFrontDrive, LeftReaRightDrive, RightTopDrive, RightFrontDrive,
+	  	  	   RightReaRightDrive;
+	  DoubleSolenoid ShifterRightDoubleSolenoid;
+
+	  Joystick XboxController, RightController, LeftController;
+
+	// update every 0.01 seconds/10 milliseconds.
+  // The talon only receives control packets every 10ms.
+	double KUpdatePeriod = 0.010;
+	const int KDoubleSolenoidForward = 2;
+	const int KDoubleSolenoidReverse = 4;
+
+
+//	Double rAxisValue = RightXboxController.GetRawAxis(2);
+//	bool rButtonPressed = RightXboxController.GetRawButton(kSolenoidButton);
+//	Double lAxisValue = LeftXboxController.GetRawAxis(2);
+//	bool lButtonPressed = LeftXboxController.GetRawButton(kSolenoidButton);
+
+public:
+ Robot()
+     : 	//Drive base motors are arranged as a group of 3 on the Left and
+ 		// 3 on the Right. All 3 have to run at the same speed, but the
+ 		// Top one is reversed relative to the other two.
+
+ 	   LeftTopDrive(5), 	 // Left Top Drive base motor
+ 	   LeftFrontDrive(6),	 // Left Front Drive base motor
+ 	   LeftReaRightDrive(4),   // Left  Rear Drive base motor
+
+       RightTopDrive(1),   // Right Top Drive base motor
+ 	   RightFrontDrive(2),	 // Right Front Drive base motor
+ 	   RightReaRightDrive(3),	 // Right Rear Drive base motor
+
+
+ 	   ShifterRightDoubleSolenoid(0,1),
+ //	   shooteRightDoubleSolenoind(2,3),
+
+ 	   RightController(0),
+ 	   LeftController(1),
+	   XboxController(2)
+ {
+
+ }
+
+	/**
+	 * Runs the motor from the output of a Joystick.
+	 */
+	void OperatorControl() {
+		while (IsOperatorControl() && IsEnabled()) {
+      // Takes a number from -1.0 (full reverse) to +1.0 (full forwards).
+		if (XboxController.GetRawButton(KDoubleSolenoidForward))
+			{
+			LeftTopDrive.Set(LeftController.GetY());
+			LeftFrontDrive.Set(-LeftController.GetY());
+			LeftReaRightDrive.Set(-LeftController.GetY());
+		  	RightTopDrive.Set(-RightController.GetY());
+		 	RightFrontDrive.Set(RightController.GetY());
+		 	RightReaRightDrive.Set(RightController.GetY());
+			ShifterRightDoubleSolenoid.Set(DoubleSolenoid::kForward);
+			Wait(1);
+			LeftTopDrive.Set(LeftController.GetY());
+			LeftFrontDrive.Set(-LeftController.GetY());
+			LeftReaRightDrive.Set(-LeftController.GetY());
+		  	RightTopDrive.Set(-RightController.GetY());
+		 	RightFrontDrive.Set(RightController.GetY());
+		 	RightReaRightDrive.Set(RightController.GetY());
+			ShifterRightDoubleSolenoid.Set(DoubleSolenoid::kOff);
+			}
+
+		if (XboxController.GetRawButton(KDoubleSolenoidReverse))
+		{
+			LeftTopDrive.Set(LeftController.GetY());
+			LeftFrontDrive.Set(-LeftController.GetY());
+			LeftReaRightDrive.Set(-LeftController.GetY());
+		  	RightTopDrive.Set(-RightController.GetY());
+		 	RightFrontDrive.Set(RightController.GetY());
+		 	RightReaRightDrive.Set(RightController.GetY());
+			ShifterRightDoubleSolenoid.Set(DoubleSolenoid::kReverse);
+			Wait(1);
+			LeftTopDrive.Set(LeftController.GetY());
+			LeftFrontDrive.Set(-LeftController.GetY());
+			LeftReaRightDrive.Set(-LeftController.GetY());
+		  	RightTopDrive.Set(-RightController.GetY());
+		 	RightFrontDrive.Set(RightController.GetY());
+		 	RightReaRightDrive.Set(RightController.GetY());
+			ShifterRightDoubleSolenoid.Set(DoubleSolenoid::kOff);
+		}
+
+		else
+			ShifterRightDoubleSolenoid.Set(DoubleSolenoid::kOff);
+
+		 // Takes a number from -1.0 (full reverse) to +1.0 (full forwards).
+
+		LeftTopDrive.Set(LeftController.GetY());
+		LeftFrontDrive.Set(-LeftController.GetY());
+		LeftReaRightDrive.Set(-LeftController.GetY());
+	  	RightTopDrive.Set(-RightController.GetY());
+	 	RightFrontDrive.Set(RightController.GetY());
+	 	RightReaRightDrive.Set(RightController.GetY());
+
+
+			Wait(kUpdatePeriod); // Wait a bit so that the loop doesn't lock everything up.
+		}
+	}
+};
+
+START_ROBOT_CLASS(Robot)

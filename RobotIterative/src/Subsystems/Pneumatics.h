@@ -17,7 +17,7 @@ private:
 	//add stuff
 
 public:
-	Compressor *c;
+	Solenoid *ShooterSingleSolenoid = new Solenoid(2);
 	Pneumatics();
 
 	void InitDefaultCommand()
@@ -26,11 +26,11 @@ public:
 	}
 	void Push()
 	{
-		c->Start();
+		ShooterSingleSolenoid->Set(true);
 	}
 	void Pull()
 	{
-		c->Stop();
+		ShooterSingleSolenoid->Set(false);
 	}
 	void Stop()
 	{

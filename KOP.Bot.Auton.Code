@@ -1,0 +1,82 @@
+#include "WPILib.h"
+
+class Robot: public IterativeRobot
+{
+
+	RobotDrive myRobot; // robot drive system
+	Joystick stick; // only joystick
+	LiveWindow *lw;
+	CANTalon leftDrive;
+	CANTalon rightDrive;
+ ///////////////////////////////////////////	int autoLoopCounter;
+
+
+public:
+	Robot() :
+		myRobot(leftDrive, rightDrive),	// these must be initialized in the same order
+		stick(0),		// as they are declared above.
+		lw(LiveWindow::GetInstance()),
+		leftDrive(2),
+		rightDrive(1),
+		autoLoopCounter(0)
+	{
+		myRobot.SetExpiration(1000);
+	}
+
+private:
+	void AutonomousInit()
+	{
+		autoLoopCounter = 0;
+	}
+
+	void AutonomousPeriodic()
+	{
+		if(autoLoopCounter < 100) //Check if we've completed 100 loops (approximately 2 seconds)
+		{
+			//leftDrive.Set(0.7);
+			//rightDrive.Set(0.7);
+			myRobot.Drive(0.7, 0.0); 	// speed of both motors, then turn radius
+			autoLoopCounter++;
+		}
+		else if(autoLoopCounter < 200 && autoLoopCounter > 100)
+		{
+			//leftDrive.Set(0);
+			//rightDrive.Set(0);
+			myRobot.Drive(0.2, 0.0);
+			autoLoopCounter++;
+		}
+		else if(autoLoopCounter < 300 && autoLoopCounter > 200)
+		{
+			myRobot.Drive(0.5, 0.7);
+			autoLoopCounter++;
+		}
+		else if(autoLoopCounter < 400 && autoLoopCounter > 300)
+		{
+			myRobot.Drive(-0.5, 0.3);
+			autoLoopCounter++;
+		}
+		else
+		{
+			myRobot.Drive(0.0, 0.0);
+			autoLoopCounter++;
+		}
+		}
+	};
+
+	//void TeleopInit()
+	//{
+
+	//}
+
+	//void TeleopPeriodic()
+	//{
+		//myRobot.ArcadeDrive(stick); // drive with arcade style (use right stick)
+	//}
+
+	//void TestPeriodic()
+	//{
+		//lw->Run();
+	//}
+//};
+
+START_ROBOT_CLASS(Robot)
